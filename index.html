@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Vertical Farming — Sector Analysis (Microeconomics II ILC)</title>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Poppins:wght@600;800&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg1: #0f0326;
+    --bg2: #2b0636;
+    --accent1: #ff007f;
+    --accent2: #ff8c00;
+    --glass: rgba(255,255,255,0.06);
+    --glass-strong: rgba(255,255,255,0.10);
+    --muted: rgba(255,255,255,0.8);
+    --card-radius: 16px;
+    --max-width: 1100px;
+  }
+  html,body{height:100%; margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;}
+  body{
+    background: radial-gradient(1200px 600px at 10% 10%, rgba(255,0,150,0.06), transparent),
+                linear-gradient(180deg,var(--bg1), var(--bg2));
+    color: #fff;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    overflow-x:hidden;
+  }
+
+  /* Layout */
+  .site { max-width: var(--max-width); margin: 40px auto; padding: 24px; }
+  header { display:flex; gap:20px; align-items:center; justify-content:space-between; margin-bottom:18px; }
+  .brand { display:flex; gap:16px; align-items:center; }
+  .logo {
+    width:64px;height:64px;border-radius:14px;
+    background:linear-gradient(135deg,var(--accent1),var(--accent2));
+    display:grid;place-items:center;font-family:Poppins;font-weight:800;
+    box-shadow:0 8px 30px rgba(0,0,0,0.5);
+  }
+  .brand h1{font-family:Poppins;font-size:18px;margin:0}
+  .meta { font-size:12px;color:rgba(255,255,255,0.85); line-height:1.1; text-align:right;}
+  .meta small{display:block;color:rgba(255,255,255,0.6)}
+
+  /* TOC */
+  nav.toc { background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:14px; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.35);}
+  nav.toc ul{list-style:none;margin:0;padding:0;display:flex;gap:8px;flex-wrap:wrap}
+  nav.toc a{ color:rgba(255,255,255,0.75); text-decoration:none; padding:8px 12px; border-radius:10px; font-size:13px }
+  nav.toc a.active{ background:linear-gradient(90deg,var(--accent1),var(--accent2)); color:white; box-shadow: 0 6px 18px rgba(0,0,0,0.4) }
+
+  /* Hero */
+  .hero { position:relative; min-height:50vh; display:flex; align-items:center; border-radius:18px; overflow:hidden; margin:22px 0; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:48px; }
+  .hero-left { flex:1; z-index:2; padding-right:24px; }
+  h2.title{ font-family:Poppins; font-size:36px; margin:0 0 8px 0; letter-spacing:-0.6px; }
+  p.lead{ margin:0 0 18px 0; color: rgba(255,255,255,0.9); font-size:16px; max-width:680px; }
+  .hero-meta { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:18px; }
+  .pill{ padding:8px 12px; border-radius:999px; background:var(--glass); font-weight:600; font-size:13px; color:var(--muted) }
+
+  /* right visual */
+  .hero-right { width:420px; height:280px; position:relative; border-radius:14px; overflow:hidden; background:linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); display:grid; place-items:center; box-shadow:0 10px 35px rgba(0,0,0,0.4); }
+  .canvas-wrap{ position:absolute; inset:0; z-index:0; }
+  .hero-card { position:relative; z-index:2; transform: translateY(0); transition: transform .45s cubic-bezier(.2,.9,.3,1); width:90%; text-align:left; padding:18px; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); backdrop-filter: blur(6px); }
+
+  /* content sections */
+  section.block { margin:28px 0; padding:22px; border-radius:14px; background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00)); box-shadow: 0 8px 30px rgba(0,0,0,0.35); }
+  .section-head { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .section-head h3{ margin:0; font-family:Poppins; font-size:20px }
+  .section-body { margin-top:12px; color:rgba(255,255,255,0.88); line-height:1.5; font-size:15px; }
+
+  /* cards grid */
+  .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap:16px; margin-top:14px; }
+  .card { background:var(--glass); padding:16px; border-radius:12px; transition: transform .28s ease, box-shadow .28s ease; cursor:pointer; }
+  .card:hover{ transform: translateY(-8px) scale(1.01); box-shadow: 0 18px 40px rgba(0,0,0,0.5); }
+
+  /* small UI */
+  .muted{ color:rgba(255,255,255,0.7); font-size:13px; }
+  .cta { display:inline-block; padding:10px 16px; background:white; color:var(--accent1); border-radius:999px; font-weight:700; text-decoration:none; box-shadow:0 8px 24px rgba(0,0,0,0.35); }
+
+  /* chart */
+  .chart { width:100%; height:200px; background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00)); border-radius:12px; padding:12px; display:flex; align-items:flex-end; gap:10px; }
+  .bar { flex:1; display:flex; align-items:flex-end; justify-content:center; gap:6px; }
+  .bar > i{ width:36px; border-radius:8px; background:linear-gradient(180deg,var(--accent1),var(--accent2)); display:block; transition:height .6s cubic-bezier(.2,.8,.25,1); box-shadow:0 8px 20px rgba(0,0,0,0.35) }
+
+  /* collapsible */
+  .collapsible { background:var(--glass-strong); padding:12px; border-radius:12px; margin-top:8px; cursor:pointer; }
+  .hidden { display:none; }
+
+  /* footer */
+  footer { margin:30px 0; text-align:center; color:rgba(255,255,255,0.7); font-size:13px; }
+
+  /* responsive */
+  @media (max-width:900px){
+    header{ flex-direction:column; align-items:flex-start; gap:12px }
+    .hero{ flex-direction:column; gap:18px }
+    .hero-right{ width:100%; height:220px }
+  }
+
+  /* subtle animations */
+  .reveal { opacity:0; transform: translateY(18px); transition: opacity .6s ease, transform .6s cubic-bezier(.2,.9,.3,1); }
+  .reveal.visible { opacity:1; transform: translateY(0); }
+  .toc-float { position:sticky; top:18px; z-index:60; }
+  .tiny { font-size:12px; color:rgba(255,255,255,0.7) }
+
+  /* table style for TOC content listing */
+  .toc-table { width:100%; border-collapse:collapse; margin-top:8px; }
+  .toc-table td { padding:8px 6px; border-bottom:1px dashed rgba(255,255,255,0.03); font-size:14px; color:rgba(255,255,255,0.9); }
+
+</style>
+</head>
+<body>
+
+<div class="site">
+
+  <!-- header -->
+  <header>
+    <div class="brand">
+      <div class="logo">VF</div>
+      <div>
+        <h1>Vertical Farming — Sector Analysis</h1>
+        <div class="muted">Microeconomics II ILC — BSc Economics Hons, Semester III — Batch 2024–28 (Division A)</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:16px;align-items:center">
+      <div class="meta">
+        <div>Submitted By</div>
+        <small>D. Sadhika (24060223091) • Ishita Doshi (24060223104) • Gayathri J (24060223111) • Haadyah Shaikh (24060223113)</small>
+      </div>
+    </div>
+  </header>
+
+  <!-- TOC -->
+  <div style="display:flex;gap:16px;align-items:flex-start">
+    <div style="flex:1;">
+      <nav class="toc toc-float reveal" id="toc">
+        <ul>
+          <li><a href="#objective" class="toc-link active">Research Objective</a></li>
+          <li><a href="#overview" class="toc-link">Sector Overview</a></li>
+          <li><a href="#market" class="toc-link">Market Structure</a></li>
+          <li><a href="#demand-supply" class="toc-link">Demand & Supply</a></li>
+          <li><a href="#inputs" class="toc-link">Input Market</a></li>
+          <li><a href="#cost-rev" class="toc-link">Cost & Revenue</a></li>
+          <li><a href="#government" class="toc-link">Government Role</a></li>
+          <li><a href="#challenges" class="toc-link">Challenges & Recommendations</a></li>
+          <li><a href="#conclusion" class="toc-link">Conclusion</a></li>
+          <li><a href="#references" class="toc-link">References</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- main content column -->
+    <main style="flex:3;">
+
+      <!-- Hero -->
+      <section class="hero block">
+        <div class="hero-left">
+          <h2 class="title">Vertical Farming: A Sector Analysis of Price, Cost, and Competition</h2>
+          <p class="lead">An applied microeconomic study of the U.S. vertical farming sector — exploring market structure, pricing power, inputs, costs, government role, and strategic recommendations. Scroll to follow the story of ideas turning into sustainable urban agriculture.</p>
+
+          <div class="hero-meta">
+            <div class="pill">Course: MICROECONOMICS II ILC</div>
+            <div class="pill">Semester III — Batch 2024–28 (Division A)</div>
+            <a class="cta" href="#objective">Read Report</a>
+          </div>
+        </div>
+
+        <div class="hero-right" id="visual-hero">
+          <div class="canvas-wrap">
+            <canvas id="heroCanvas"></canvas>
+          </div>
+          <div class="hero-card">
+            <div style="font-size:13px; color:rgba(255,255,255,0.9)">Snapshot</div>
+            <div style="margin-top:8px;font-weight:700;font-size:20px">U.S. Vertical Farming Market : <span class="tiny">USD 735.6M (2023)</span></div>
+            <div style="margin-top:6px" class="muted">Projected CAGR: <strong>19.1% through 2030</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 1 Research Objective -->
+      <section id="objective" class="block reveal">
+        <div class="section-head">
+          <h3>1. Research Objective</h3>
+          <div class="tiny">Page 1</div>
+        </div>
+        <div class="section-body">
+          <p><strong>The goal of this report</strong> is to study the vertical farming sector in the United States through a microeconomic perspective. Vertical farming is an emerging industry that combines technology and agriculture in innovative ways, making it an interesting case to understand how firms make decisions in real markets. This report focuses on how companies in this sector set prices, manage costs, and interact with inputs like land, labour, capital, and entrepreneurship. It also examines the role of government policies and regulations, which can shape how the industry grows and competes. By examining vertical farming through the lens of microeconomics, this report aims to bridge theoretical principles with practical realities, providing insight into how theory and practice intersect, and highlighting both the challenges vertical farming faces and the strategies firms employ to succeed in a competitive and evolving market.</p>
+        </div>
+      </section>
+
+      <!-- 2 Sector Overview -->
+      <section id="overview" class="block reveal">
+        <div class="section-head">
+          <h3>2. Sector Overview</h3>
+          <div class="tiny">Page 2</div>
+        </div>
+        <div class="section-body">
+          <p><strong>Vertical farming</strong> is an emerging, innovative, and sustainable approach to agriculture that involves cultivating crops in vertically stacked layers within controlled indoor environments. The first example of vertical farming known today is that of the Babylonian Hanging Gardens around 2,500 years ago. By arranging crops in vertical layers, farmers can grow a significantly larger amount of food on the same land area, or even in smaller plots. These layers are often set up inside buildings such as skyscrapers, warehouses, shipping containers, or greenhouses, and sometimes in locations that would normally be unsuitable for traditional farming. This method of farming requires hydroponics (soilless, water-based) or aeroponics (nutrient mists), artificial temperature, light, water, and humidity control.</p>
+
+          <p>The biggest benefit of vertical farming is that it can generate more crops in a smaller space while using less land and water, and without relying heavily on seasons. With cities expanding and people wanting fresher, locally grown food, vertical farming has gained major attention in the United States.</p>
+
+          <p>The U.S. vertical farming industry consists of both emerging startups and large agricultural companies that are investing in indoor farms. Leading firms such as <em>AeroFarms, Plenty, and Bowery Farming</em> rely on automation, data analytics, and advanced technologies to improve crop efficiency and safety. The sector is also attracting attention from government bodies and investors because it offers solutions to food security challenges, supports sustainable urban agriculture, and reduces environmental impacts such as carbon emissions from long-distance food transport.</p>
+
+          <p>Although it is still growing, vertical farming shows how new ideas in agriculture can bring both economic benefits and technological progress. In the U.S., its expansion demonstrates how modern farming methods can help deal with today’s problems, such as rising city populations, changing climates, and the need for sustainable food. This makes it an interesting topic for studying markets and economics.</p>
+        </div>
+      </section>
+
+      <!-- 3 Market Structure -->
+      <section id="market" class="block reveal">
+        <div class="section-head">
+          <h3>3. Market Structure Analysis</h3>
+          <div class="tiny">Page 3</div>
+        </div>
+        <div class="section-body">
+          <p>The U.S. vertical farming industry can be viewed as an <strong>oligopoly</strong>, meaning that a small group of firms dominate the market, drive innovation, and shape pricing trends. In theory, oligopolies are marked by high market concentration, significant barriers to entry, some degree of product differentiation, and interdependence among competitors. This structure leads firms to act strategically, as each must consider rivals’ choices when deciding on pricing, expansion, or investment.</p>
+
+          <div class="grid" style="margin-top:12px">
+            <div class="card">
+              <strong>Number of Firms</strong>
+              <p class="muted">The U.S. vertical farming industry has many small startups, but only a few companies—such as AeroFarms, Bowery Farming, and Plenty—operate on a large scale and dominate production. This concentration reflects the oligopoly model, where a small number of firms control most of the market.</p>
+            </div>
+
+            <div class="card">
+              <strong>Product Differentiation</strong>
+              <p class="muted">Most vertical farms grow similar crops (leafy greens, herbs). Leading firms differentiate themselves through branding, sustainability practices, and advanced automation technologies — consistent with non-price competition.</p>
+            </div>
+
+            <div class="card">
+              <strong>Pricing Power & Elasticity</strong>
+              <p class="muted">Large firms can charge premium prices for produce marketed as local, fresh, and pesticide-free, but pricing power is limited by competition with conventional agriculture — indicating moderate price elasticity.</p>
+            </div>
+
+            <div class="card">
+              <strong>Entry & Exit Barriers</strong>
+              <p class="muted">High capital investment, specialized tech, and need for skilled labor make entry challenging. Exit is costly due to sunk infrastructure costs — reinforcing oligopolistic barriers.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4 Demand & Supply -->
+      <section id="demand-supply" class="block reveal">
+        <div class="section-head">
+          <h3>4. Demand and Supply Analysis</h3>
+          <div class="tiny">Page 4</div>
+        </div>
+        <div class="section-body">
+          <p><strong>Market Demand</strong> for vertically farmed produce in the United States is influenced by consumer preferences, income levels, and increasing awareness of health and sustainability. Urban populations, in particular, seek fresh, locally grown, and pesticide-free vegetables, creating a niche market. These products are generally priced higher than conventional alternatives, but consumers often pay a premium for perceived quality and environmental benefits; consequently demand is moderately price elastic.</p>
+
+          <p><strong>Supply Constraints</strong> include high initial investments for LED lighting, hydroponic/aeroponic systems, climate control, and automation. Skilled labor is also essential. Government incentives (grants, subsidies) can encourage expansion by reducing financial burdens. Vertical farming supports year-round production, minimizing seasonality, but short-term shocks like rising energy costs can constrain production and affect pricing.</p>
+
+          <div style="margin-top:12px">
+            <strong>Market Dynamics & Growth Projections</strong>
+            <p class="muted">Industry reports indicate the U.S. vertical farming market was valued at approximately <strong>USD 735.6 million in 2023</strong> and is projected to grow at a <strong>compound annual growth rate (CAGR) of 19.1% through 2030</strong>. This growth reflects rising consumer demand, technology adoption, and investment in the sector.</p>
+
+            <!-- chart -->
+            <div style="margin-top:12px">
+              <div class="muted">Projected Market Value (illustrative)</div>
+              <div class="chart" id="chart">
+                <!-- bars inserted by JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- interactive mini toggle for Demand vs Supply -->
+          <div style="margin-top:18px">
+            <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+              <div class="pill">Interactive Micro-visual</div>
+              <div class="muted">Toggle to highlight Demand or Supply drivers:</div>
+            </div>
+            <div style="margin-top:10px; display:flex; gap:12px; align-items:center; flex-wrap:wrap">
+              <button id="btnDemand" class="pill" style="background:transparent;border:1px solid rgba(255,255,255,0.06)">Demand</button>
+              <button id="btnSupply" class="pill" style="background:transparent;border:1px solid rgba(255,255,255,0.06)">Supply</button>
+            </div>
+
+            <div id="dsViz" style="margin-top:12px; display:flex; gap:12px; flex-wrap:wrap;">
+              <!-- cards toggled by JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5 Input Market -->
+      <section id="inputs" class="block reveal">
+        <div class="section-head">
+          <h3>5. Input Market Analysis</h3>
+          <div class="tiny">Page 5</div>
+        </div>
+        <div class="section-body">
+          <p><strong>Key Inputs</strong> in U.S. vertical farming: land, labor, capital, and entrepreneurship — each affecting operational efficiency and scalability.</p>
+
+          <div class="grid" style="margin-top:12px">
+            <div class="card">
+              <strong>Land</strong>
+              <p class="muted">Vertical farming transforms the role of land by stacking indoor facilities, enabling high yields on small urban plots. However, access to suitable real estate can be constrained by high rental/acquisition costs.</p>
+            </div>
+            <div class="card">
+              <strong>Labor</strong>
+              <p class="muted">Labor is specialized — technicians, agronomists, data analysts — often commanding higher wages than traditional agriculture due to technical skill requirements.</p>
+            </div>
+            <div class="card">
+              <strong>Capital</strong>
+              <p class="muted">Significant capital is needed for infrastructure (LEDs, climate control, hydro/aeroponics, automation). Access to funding (VC, grants) is crucial for scaling.</p>
+            </div>
+            <div class="card">
+              <strong>Entrepreneurship & Innovation</strong>
+              <p class="muted">Entrepreneurs drive new models, crop experiments, and tech integration — helping firms differentiate in a competitive environment.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6 Cost & Revenue -->
+      <section id="cost-rev" class="block reveal">
+        <div class="section-head">
+          <h3>6. Cost and Revenue Analysis</h3>
+          <div class="tiny">Page 6</div>
+        </div>
+        <div class="section-body">
+          <p>The sector combines high upfront fixed costs (buildings, LED lighting, climate control, hydroponic/aeroponic setups, automation) with ongoing variable costs (energy, water, nutrients, labor, maintenance). Energy is a major expense. Revenue channels include selling fresh produce, direct contracts with restaurants/grocers, subscription deliveries, and partnerships with distributors.</p>
+
+          <div style="margin-top:12px">
+            <div class="collapsible" data-target="costDetail">Fixed Costs (click to expand)</div>
+            <div id="costDetail" class="hidden" style="margin-top:8px">
+              <div class="card">
+                <strong>Examples:</strong>
+                <ul>
+                  <li>Building/installing indoor farms</li>
+                  <li>LED lighting & climate control</li>
+                  <li>Hydroponics / Aeroponics systems</li>
+                  <li>Automation hardware & sensors</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="collapsible" data-target="varDetail" style="margin-top:8px">Variable Costs (click to expand)</div>
+            <div id="varDetail" class="hidden" style="margin-top:8px">
+              <div class="card">
+                <strong>Examples:</strong>
+                <ul>
+                  <li>Energy (lighting & HVAC)</li>
+                  <li>Water & nutrients</li>
+                  <li>Labor (technicians & harvest staff)</li>
+                  <li>Maintenance & spare parts</li>
+                </ul>
+              </div>
+            </div>
+
+            <div style="margin-top:12px">
+              <p class="muted">Economies of scale can lower average costs for larger farms; automation and improved energy efficiency further reduce per-unit cost. Smaller farms face higher per-unit costs and must rely on niches or premium pricing.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7 Government Role -->
+      <section id="government" class="block reveal">
+        <div class="section-head">
+          <h3>7. Government Role & Policies</h3>
+          <div class="tiny">Page 7</div>
+        </div>
+        <div class="section-body">
+          <p>Government policies (zoning, building codes, health standards, licensing) shape how vertical farms operate. Financial incentives — subsidies, tax credits for energy-efficient or renewable installations — reduce upfront costs. Public-private partnerships support R&D, infrastructure, and knowledge sharing. Recent policy changes and specialized USDA support encourage urban agriculture growth.</p>
+
+          <div style="margin-top:12px">
+            <div class="muted">Illustrative timeline (policy & support):</div>
+            <div style="display:flex;gap:8px;margin-top:8px;align-items:flex-end">
+              <div style="flex:1;background:var(--glass);padding:10px;border-radius:10px;text-align:center">Zoning & Building Codes</div>
+              <div style="flex:1;background:var(--glass);padding:10px;border-radius:10px;text-align:center">Grants & Subsidies</div>
+              <div style="flex:1;background:var(--glass);padding:10px;border-radius:10px;text-align:center">USDA Urban Service Centers</div>
+              <div style="flex:1;background:var(--glass);padding:10px;border-radius:10px;text-align:center">Public-Private Partnerships</div>
+            </div>
+            <p class="muted" style="margin-top:10px">These policies create an environment that encourages innovation, reduces risk, and promotes sustainable practices — enabling vertical farms to scale.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8 Challenges & Recommendations -->
+      <section id="challenges" class="block reveal">
+        <div class="section-head">
+          <h3>8. Challenges and Recommendations</h3>
+          <div class="tiny">Page 8</div>
+        </div>
+        <div class="section-body">
+          <p><strong>Challenges:</strong> Skilled labour shortages, high energy costs, significant infrastructure expenses, pricing constraints (consumers unwilling to pay large premiums), inefficient space/energy usage, and difficulty achieving increasing returns to scale.</p>
+
+          <div style="margin-top:12px">
+            <strong>Recommendations (microeconomic reasoning)</strong>
+            <ul style="margin-top:8px">
+              <li>Training programs / partnerships with technical schools to build skilled labour supply.</li>
+              <li>Invest in energy-efficient systems and optimize processes to lower operational costs.</li>
+              <li>Careful pricing based on elasticity estimates to maximize revenue without losing customers.</li>
+              <li>Adopt automation and space optimization techniques to improve productivity and lower average costs.</li>
+            </ul>
+
+            <div style="margin-top:12px" class="grid">
+              <div class="card"><strong>Skill Development</strong><div class="muted">Partner with schools to increase labor productivity.</div></div>
+              <div class="card"><strong>Energy Strategy</strong><div class="muted">Renewables + efficiency investments to reduce variable costs.</div></div>
+              <div class="card"><strong>Pricing Strategy</strong><div class="muted">Use elasticity data and premium channels (restaurants, subscriptions).</div></div>
+              <div class="card"><strong>Automation</strong><div class="muted">Scale via robotics & analytics to lower per-unit costs.</div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9 Conclusion -->
+      <section id="conclusion" class="block reveal">
+        <div class="section-head">
+          <h3>9. Conclusion</h3>
+          <div class="tiny">Page 9</div>
+        </div>
+        <div class="section-body">
+          <p>The U.S. vertical farming sector demonstrates how innovation and technology can transform agriculture — especially in urban areas with limited land. Combining hydroponics, climate control, and automation, vertical farms produce high-quality crops year-round. The sector’s market structure, supply and demand dynamics, and reliance on skilled labour and capital determine profitability. Government policies and subsidies help growth; strategic pricing and cost control are essential to long-term sustainability. Despite challenges (energy costs, labour shortages), microeconomic tools — input management, cost control, and demand analysis — can help firms remain competitive. The sector offers a promising model for food security, urban sustainability, and market innovation.</p>
+        </div>
+      </section>
+
+      <!-- 10 References -->
+      <section id="references" class="block reveal">
+        <div class="section-head">
+          <h3>10. References</h3>
+          <div class="tiny">Page 10</div>
+        </div>
+        <div class="section-body">
+          <table class="toc-table">
+            <tr><td>Grand View Research. (2024). U.S. vertical farming market size, share & trends analysis report.</td></tr>
+            <tr><td>LANPDT. (2024). Vertical farming & agritech in the U.S. market research report.</td></tr>
+            <tr><td>Mordor Intelligence. (2025). United States Vertical Farming Market Size, Growth & Trends Report, 2030.</td></tr>
+            <tr><td>U.S. Department of Agriculture (USDA). (2023). Urban agriculture and innovative production grants.</td></tr>
+          </table>
+        </div>
+      </section>
+
+      <footer>
+        <div>Report — Vertical Farming: A Sector Analysis of Price, Cost, and Competition</div>
+        <div style="margin-top:6px" class="muted">Prepared by D. Sadhika • Ishita Doshi • Gayathri J • Haadyah Shaikh</div>
+      </footer>
+
+    </main>
+  </div>
+
+</div>
+
+<!-- Scripts: interactions, particles, chart -->
+<script>
+/* -------------------------
+   Smooth scroll + TOC highlight
+   ------------------------- */
+document.querySelectorAll('.toc-link').forEach(a=>{
+  a.addEventListener('click',(e)=>{
+    e.preventDefault();
+    document.querySelectorAll('.toc-link').forEach(x=>x.classList.remove('active'));
+    a.classList.add('active');
+    const id = a.getAttribute('href');
+    document.querySelector(id).scrollIntoView({behavior:'smooth', block:'start'});
+  });
+});
+
+const sections = document.querySelectorAll('main section');
+const tocLinks = document.querySelectorAll('.toc-link');
+
+function onScroll(){
+  let index = sections.length;
+  while(--index && window.scrollY + 120 < sections[index].offsetTop) {}
+  tocLinks.forEach(link => link.classList.remove('active'));
+  const active = document.querySelector('.toc-link[href="#'+sections[index].id+'"]');
+  if(active) active.classList.add('active');
+
+  // reveal animations
+  document.querySelectorAll('.reveal').forEach(el=>{
+    const r = el.getBoundingClientRect();
+    if(r.top < window.innerHeight - 80) el.classList.add('visible');
+  });
+}
+document.addEventListener('scroll', onScroll);
+window.addEventListener('load', onScroll);
+
+/* -------------------------
+   Hero particles (simple glowing nodes)
+   ------------------------- */
+const heroCanvas = document.getElementById('heroCanvas');
+const hctx = heroCanvas.getContext('2d');
+function fitHero(){ heroCanvas.width = document.querySelector('#visual-hero').clientWidth; heroCanvas.height = document.querySelector('#visual-hero').clientHeight;}
+fitHero(); window.addEventListener('resize', fitHero);
+
+let nodes = [];
+function initNodes(){
+  nodes = [];
+  const count = 18;
+  for(let i=0;i<count;i++){
+    nodes.push({
+      x: Math.random()*heroCanvas.width,
+      y: Math.random()*heroCanvas.height,
+      r: 6 + Math.random()*18,
+      vx: (Math.random()-0.5)*0.6,
+      vy: (Math.random()-0.5)*0.6,
+      a: 0.06 + Math.random()*0.6
+    });
+  }
+}
+initNodes();
+function drawHero(){
+  hctx.clearRect(0,0,heroCanvas.width,heroCanvas.height);
+  for(const n of nodes){
+    n.x += n.vx; n.y += n.vy;
+    if(n.x < -50) n.x = heroCanvas.width+50;
+    if(n.x > heroCanvas.width+50) n.x = -50;
+    if(n.y < -50) n.y = heroCanvas.height+50;
+    if(n.y > heroCanvas.height+50) n.y = -50;
+    const g = hctx.createRadialGradient(n.x,n.y,n.r*0.1,n.x,n.y,n.r);
+    g.addColorStop(0, 'rgba(255,255,255,'+ (0.09 + n.a) +')');
+    g.addColorStop(1, 'rgba(255,255,255,0)');
+    hctx.beginPath();
+    hctx.fillStyle = g;
+    hctx.arc(n.x,n.y,n.r,0,Math.PI*2); hctx.fill();
+  }
+  requestAnimationFrame(drawHero);
+}
+drawHero();
+
+/* -------------------------
+   Chart: project market value from 2023 using CAGR 19.1% (illustrative)
+   ------------------------- */
+(function(){
+  // compute sample values
+  const base = 735.6; // million 2023
+  const cagr = 0.191;
+  const years = [2023,2024,2025,2026,2027,2028,2029,2030];
+  const values = years.map((y,i)=> +(base * Math.pow(1+cagr, i)).toFixed(1));
+  const chart = document.getElementById('chart');
+  // create bars
+  years.forEach((yr, idx) => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'bar';
+    const bar = document.createElement('i');
+    bar.style.height = '6px'; // start small, animate soon
+    const label = document.createElement('div');
+    label.style.fontSize='12px'; label.style.marginTop='8px'; label.innerHTML = yr;
+    wrapper.appendChild(bar);
+    const col = document.createElement('div');
+    col.style.display='flex'; col.style.flexDirection='column'; col.style.alignItems='center';
+    col.appendChild(wrapper);
+    col.appendChild(label);
+    chart.appendChild(col);
+    // animate to target height (map value to 30-100%)
+    const min = Math.min(...values); const max = Math.max(...values);
+    const pct = 20 + 80 * ( (values[idx] - min) / (max - min) );
+    setTimeout(()=>{ bar.style.height = pct + '%'; bar.title = years[idx] + ': $' + values[idx] + 'M'; }, 120 + idx*120);
+  });
+})();
+
+/* -------------------------
+   Demand vs Supply toggle visuals
+   ------------------------- */
+const dsViz = document.getElementById('dsViz');
+const demandDrivers = [
+  {title:'Urban consumers', desc:'Preference for fresh, local & pesticide-free produce'},
+  {title:'Higher incomes', desc:'Willingness to pay premium for quality'},
+  {title:'Sustainability awareness', desc:'Environmental preferences'}
+];
+const supplyDrivers = [
+  {title:'High capital', desc:'LEDs, climate control, automation investments'},
+  {title:'Skilled labour', desc:'Technicians, agronomists, data analysts required'},
+  {title:'Energy dependence', desc:'Lighting & HVAC are major cost drivers'}
+];
+
+function renderDS(type){
+  dsViz.innerHTML = '';
+  const arr = (type==='d'?demandDrivers:supplyDrivers);
+  arr.forEach(it=>{
+    const c = document.createElement('div'); c.className='card';
+    c.style.flex='1';
+    c.innerHTML = '<strong>'+it.title+'</strong><div class="muted" style="margin-top:8px">'+it.desc+'</div>';
+    dsViz.appendChild(c);
+  });
+}
+document.getElementById('btnDemand').addEventListener('click', ()=>{ renderDS('d'); });
+document.getElementById('btnSupply').addEventListener('click', ()=>{ renderDS('s'); });
+// default
+renderDS('d');
+
+/* -------------------------
+   Collapsibles
+   ------------------------- */
+document.querySelectorAll('.collapsible').forEach(el=>{
+  el.addEventListener('click', ()=>{
+    const id = el.getAttribute('data-target');
+    const target = document.getElementById(id);
+    if(target) target.classList.toggle('hidden');
+    el.classList.toggle('active');
+  });
+});
+
+/* -------------------------
+   Tiny tilt effect for cards (mouse move)
+   ------------------------- */
+document.querySelectorAll('.card').forEach(card=>{
+  card.addEventListener('mousemove', (e)=>{
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width;
+    const y = (e.clientY - r.top) / r.height;
+    const rx = (y - 0.5) * 6;
+    const ry = (x - 0.5) * -8;
+    card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`;
+  });
+  card.addEventListener('mouseleave', ()=>{
+    card.style.transform = '';
+  });
+});
+
+/* -------------------------
+   Small UX: highlight hero card on page focus
+   ------------------------- */
+document.querySelector('.hero-card').addEventListener('mouseenter', ()=>{
+  document.querySelector('#visual-hero').style.transform = 'translateY(-6px)'; 
+});
+document.querySelector('.hero-card').addEventListener('mouseleave', ()=>{
+  document.querySelector('#visual-hero').style.transform = '';
+});
+</script>
+
+</body>
+</html>
